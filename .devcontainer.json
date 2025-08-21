@@ -49,7 +49,7 @@
     "8787": {
       "label": "RStudio",
       "protocol": "http",
-      "onAutoForward": "openBrowser",
+      "onAutoForward": "ignore",
       "visibility": "private"
     }
   }
