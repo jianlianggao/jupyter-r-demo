@@ -1,0 +1,56 @@
+{
+  "image": "rocker/binder:4.3",
+  "containerUser": "root",
+  
+// Disable RStudio login and ensure RStudio knows who the user is
+  "containerEnv": {
+    "DISABLE_AUTH": "true",        // helpful if Rocker's init handles it
+    "USER": "rstudio"              // required when auth is disabled
+  },
+
+  "settings": {
+    "extensions.ignoreRecommendations": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "git.rebaseWhenSync": true
+  },
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+      "packages": "languageserver"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:latest": {
+      "installTinyTex": "false"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "reditorsupport.r",
+        "ms-toolsai.jupyter",
+        "jaydesl.vscode-r-arrow"
+      ]
+    }
+  },
+
+  // NEW: install and start RStudio Server
+  //"postCreateCommand": "set -eux && apt-get update && apt-get install -y --no-install-recommends gdebi-core wget ca-certificates && wget -O /tmp/rstudio-server.deb https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2025.05.1-513-amd64.deb && gdebi -n /tmp/rstudio-server.deb && rm -f /tmp/rstudio-server.deb && (id -u rstudio >/dev/null 2>&1) || useradd -m -s /bin/bash -u 1000 rstudio || true && echo rstudio:rstudio | chpasswd || true && printf \"auth-none=1\\n\" > /etc/rstudio/rserver.conf && printf \"session-default-working-dir=/workspaces/jupyter-r-codespace\\nsession-default-new-project-dir=/workspaces/jupyter-r-codespace\\n\" > /etc/rstudio/rsession.conf && mkdir -p /workspaces/jupyter-r-codespace && chown -R rstudio:rstudio /workspaces/jupyter-r-codespace || true && rstudio-server start",
+
+  
+// Install RStudio Server, create user, set configs
+  "postCreateCommand": "/bin/bash -c 'apt-get update && apt-get install -y --no-install-recommends wget gdebi-core ca-certificates && wget -O /tmp/rstudio-server.deb https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2025.05.1-513-amd64.deb && gdebi -n /tmp/rstudio-server.deb && rm -f /tmp/rstudio-server.deb && id -u rstudio >/dev/null 2>&1 || useradd -m -s /bin/bash -u 1000 rstudio && echo rstudio:rstudio | chpasswd || true && printf \"auth-none=1\\nwww-address=0.0.0.0\\n\" > /etc/rstudio/rserver.conf && printf \"session-default-working-dir=/workspaces/jupyter-r-codespace\\nsession-default-new-project-dir=/workspaces/jupyter-r-codespace\\n\" > /etc/rstudio/rsession.conf && mkdir -p /workspaces/jupyter-r-codespace && chown -R rstudio:rstudio /workspaces/jupyter-r-codespace || true && rstudio-server start'",
+
+
+  "postStartCommand": "rstudio-server restart || rstudio-server start",
+  
+  // NEW: forward RStudio port
+  "forwardPorts": [8787],
+  "portsAttributes": {
+    "8787": {
+      "label": "RStudio",
+      "protocol": "http",
+      "onAutoForward": "openBrowser",
+      "visibility": "private"
+    }
+  }
+}
