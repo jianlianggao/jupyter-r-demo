@@ -17,7 +17,7 @@
   },
   "features": {
     "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-      "packages": "languageserver"
+      "packages": "languageserver,quantmod,xts,lubridate,zoo,PerformanceAnalytics,dtplyr,data.table"
     },
     "ghcr.io/rocker-org/devcontainer-features/quarto-cli:latest": {
       "installTinyTex": "false"
