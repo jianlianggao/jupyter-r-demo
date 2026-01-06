@@ -1,0 +1,15 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+pkgs <- c("tidyverse","MASS","ISLR2","car","quantmod","lubridate","zoo",
+           "data.table","purr","glue","ggplot2","broom","slider","boot",
+           "leaps","pls","glmnet","pacman","dynlm","readxl","urca")
+ 
+missing <- setdiff(pkgs, rownames(installed.packages()))
+
+missing
+```
+
